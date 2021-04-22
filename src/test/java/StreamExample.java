@@ -1,9 +1,11 @@
+import ch.qos.logback.core.boolex.EvaluationException;
 import com.sun.xml.internal.ws.api.model.wsdl.WSDLOutput;
 import org.junit.jupiter.api.Test;
 
 import javax.jws.soap.SOAPBinding;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
@@ -454,6 +456,31 @@ public class StreamExample {
                         "role:" + user.getRole(),
                         "name:" + user.getName()))
                 .collect(toList());
+
+        System.out.println(data);
+
+
+    }
+    @Test
+    public void testFlatMapToInt() {
+        Collection<User> users = Arrays.asList(
+                new User(4, "User44", Role.USER),
+                new User(1, "User1", Role.ADMIN),
+                new User(2, "User2", Role.GUEST),
+                new User(5, "User5", Role.GUEST),
+                new User(3, "User3", Role.GUEST)
+        );
+
+        List<Integer> data = users.stream()
+                //.sorted(Comparator.comparing(user -> user.getId()))
+                .flatMapToInt(user -> IntStream.of(
+                        (int) user.getId(),
+                        user.getName().length(),
+                        user.getRole().name().length()))
+                //Нихуяшечки не понятно!
+               .collect( () -> new LinkedList<Integer>(),
+                        (list, value) -> list.add(value),
+                       (list,list2 ) -> list.addAll(list2));
 
         System.out.println(data);
 
