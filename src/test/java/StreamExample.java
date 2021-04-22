@@ -1,12 +1,11 @@
 import ch.qos.logback.core.boolex.EvaluationException;
 import com.sun.xml.internal.ws.api.model.wsdl.WSDLOutput;
 import org.junit.jupiter.api.Test;
+import org.w3c.dom.ls.LSOutput;
 
 import javax.jws.soap.SOAPBinding;
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
+import java.util.stream.*;
 
 import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.*;
@@ -39,7 +38,6 @@ public class StreamExample {
         private Role role;
 
 
-
         public long getId() {
             return id;
         }
@@ -57,24 +55,24 @@ public class StreamExample {
     @Test
     public void streamTestDemoJava7() {
         Collection<User> users = Arrays.asList(
-                new User(1,"Tema",Role.USER),
-                new User(12,"Vasya Pupkin",Role.ADMIN),
-                new User(133,"Super cat",Role.GUEST),
-                new User(11,"Super woman", Role.GUEST),
-                new User(94,"Super man",Role.GUEST)
+                new User(1, "Tema", Role.USER),
+                new User(12, "Vasya Pupkin", Role.ADMIN),
+                new User(133, "Super cat", Role.GUEST),
+                new User(11, "Super woman", Role.GUEST),
+                new User(94, "Super man", Role.GUEST)
         );
 
         //Так фильтруем данные.
         List<User> usersFiltred = new LinkedList<>();
 
-        for (User user: users) {
-            if(user.getRole() == Role.GUEST) {
+        for (User user : users) {
+            if (user.getRole() == Role.GUEST) {
                 usersFiltred.add(user);
             }
         }
 
         //Так сортируем данные.
-        Comparator<User> comparator = (u1,u2) -> Long.compare(u1.getId(),u2.getId());
+        Comparator<User> comparator = (u1, u2) -> Long.compare(u1.getId(), u2.getId());
 
         Collections.sort(usersFiltred, new Comparator<User>() {
             @Override
@@ -87,7 +85,7 @@ public class StreamExample {
         Collections.sort(usersFiltred, comparator);
 
         List<String> userNames = new LinkedList<>();
-        for (User user: usersFiltred) {
+        for (User user : usersFiltred) {
             userNames.add(user.getName());
         }
 
@@ -101,16 +99,16 @@ public class StreamExample {
     public void streamTestDemoJava8() {
 
         Collection<User> users = Arrays.asList(
-                new User(1,"Tema",Role.USER),
-                new User(12,"Vasya Pupkin",Role.ADMIN),
-                new User(133,"Super cat",Role.GUEST),
-                new User(11,"Super woman", Role.GUEST),
-                new User(94,"Super man",Role.GUEST)
+                new User(1, "Tema", Role.USER),
+                new User(12, "Vasya Pupkin", Role.ADMIN),
+                new User(133, "Super cat", Role.GUEST),
+                new User(11, "Super woman", Role.GUEST),
+                new User(94, "Super man", Role.GUEST)
         );
 
         List<String> userNames = users.stream()
                 .filter(user -> user.getRole() == Role.GUEST)
-                .sorted( (u1, u2) -> Long.compare(u1.getId(), u2.getId()))
+                .sorted((u1, u2) -> Long.compare(u1.getId(), u2.getId()))
                 //Можно и так сортировать
                 //.sorted(Comparator.comparing(User::getId).reversed())
 
@@ -129,11 +127,11 @@ public class StreamExample {
     public void streamFilter() {
 
         Collection<User> users = Arrays.asList(
-                new User(1,"Tema",Role.USER),
-                new User(2,"Vasya Pupkin",Role.ADMIN),
-                new User(3,"Super cat",Role.GUEST),
-                new User(4,"Super woman", Role.GUEST),
-                new User(5,"Super man",Role.GUEST)
+                new User(1, "Tema", Role.USER),
+                new User(2, "Vasya Pupkin", Role.ADMIN),
+                new User(3, "Super cat", Role.GUEST),
+                new User(4, "Super woman", Role.GUEST),
+                new User(5, "Super man", Role.GUEST)
         );
 
         List<String> userNames = users.stream()
@@ -148,7 +146,7 @@ public class StreamExample {
         @Override
 
         public int hashCode() {
-            return (int) (getId() ^ getId() >>> 32 );
+            return (int) (getId() ^ getId() >>> 32);
         }
 
         public EqualsUser(long id, String name, Role role) {
@@ -170,11 +168,11 @@ public class StreamExample {
     public void distinctTest() {
 
         Collection<User> users = Arrays.asList(
-                new EqualsUser(1,"User1",Role.USER),
-                new EqualsUser(2,"User2",Role.ADMIN),
-                new EqualsUser(2,"User3",Role.GUEST),
-                new EqualsUser(1,"User4", Role.GUEST),
-                new EqualsUser(5,"User5",Role.GUEST)
+                new EqualsUser(1, "User1", Role.USER),
+                new EqualsUser(2, "User2", Role.ADMIN),
+                new EqualsUser(2, "User3", Role.GUEST),
+                new EqualsUser(1, "User4", Role.GUEST),
+                new EqualsUser(5, "User5", Role.GUEST)
         );
 
         List<User> userList = users.stream()
@@ -189,11 +187,11 @@ public class StreamExample {
     public void limitTest() {
 
         Collection<User> users = Arrays.asList(
-                new EqualsUser(1,"User1",Role.USER),
-                new EqualsUser(2,"User2",Role.ADMIN),
-                new EqualsUser(2,"User3",Role.GUEST),
-                new EqualsUser(1,"User4", Role.GUEST),
-                new EqualsUser(5,"User5",Role.GUEST)
+                new EqualsUser(1, "User1", Role.USER),
+                new EqualsUser(2, "User2", Role.ADMIN),
+                new EqualsUser(2, "User3", Role.GUEST),
+                new EqualsUser(1, "User4", Role.GUEST),
+                new EqualsUser(5, "User5", Role.GUEST)
         );
 
         List<User> userList = users.stream()
@@ -208,11 +206,11 @@ public class StreamExample {
     public void skipTest() {
 
         Collection<User> users = Arrays.asList(
-                new EqualsUser(1,"User1",Role.USER),
-                new EqualsUser(2,"User2",Role.ADMIN),
-                new EqualsUser(3,"User3",Role.GUEST),
-                new EqualsUser(4,"User4", Role.GUEST),
-                new EqualsUser(5,"User5",Role.GUEST)
+                new EqualsUser(1, "User1", Role.USER),
+                new EqualsUser(2, "User2", Role.ADMIN),
+                new EqualsUser(3, "User3", Role.GUEST),
+                new EqualsUser(4, "User4", Role.GUEST),
+                new EqualsUser(5, "User5", Role.GUEST)
         );
 
         List<User> userList = users.stream()
@@ -227,11 +225,11 @@ public class StreamExample {
     public void sortedWithOutComparator() {
 
         Collection<User> users = Arrays.asList(
-                new EqualsUser(4,"User4",Role.USER),
-                new EqualsUser(1,"User1",Role.ADMIN),
-                new EqualsUser(2,"User2",Role.GUEST),
-                new EqualsUser(5,"User5", Role.GUEST),
-                new EqualsUser(3,"User3",Role.GUEST)
+                new EqualsUser(4, "User4", Role.USER),
+                new EqualsUser(1, "User1", Role.ADMIN),
+                new EqualsUser(2, "User2", Role.GUEST),
+                new EqualsUser(5, "User5", Role.GUEST),
+                new EqualsUser(3, "User3", Role.GUEST)
         );
 
         List<User> userList = users.stream()
@@ -260,11 +258,11 @@ public class StreamExample {
     public void sortedWithComparator() {
 
         Collection<User> users = Arrays.asList(
-                new ComparableUser(4,"User4",Role.USER),
-                new ComparableUser(1,"User1",Role.ADMIN),
-                new ComparableUser(2,"User2",Role.GUEST),
-                new ComparableUser(5,"User5", Role.GUEST),
-                new ComparableUser(3,"User3",Role.GUEST)
+                new ComparableUser(4, "User4", Role.USER),
+                new ComparableUser(1, "User1", Role.ADMIN),
+                new ComparableUser(2, "User2", Role.GUEST),
+                new ComparableUser(5, "User5", Role.GUEST),
+                new ComparableUser(3, "User3", Role.GUEST)
         );
 
         List<User> userList = users.stream()
@@ -284,22 +282,21 @@ public class StreamExample {
 
         List<Integer> finalColl = collection.stream()
                 //.skip(5) обязательно вперед
-                .filter(n-> {
+                .filter(n -> {
                     phases.add("f-" + n);
-                    return n % 2 ==0;
+                    return n % 2 == 0;
                 })
-                .map(m-> {
+                .map(m -> {
                     phases.add("m-" + m);
                     return m * m;
                 })
-                .sorted( (i1, i2) -> {
-                    phases.add("s-" + i1 + "-" + i2 );
-                    return Integer.compare(i1,i2);
+                .sorted((i1, i2) -> {
+                    phases.add("s-" + i1 + "-" + i2);
+                    return Integer.compare(i1, i2);
 
                 })
                 .limit(2)
                 .collect(toList());
-
 
 
         System.out.println(finalColl);
@@ -310,17 +307,17 @@ public class StreamExample {
     public void peekTest() {
 
         Collection<User> users = Arrays.asList(
-                new ComparableUser(4,"User4",Role.USER),
-                new ComparableUser(1,"User1",Role.ADMIN),
-                new ComparableUser(2,"User2",Role.GUEST),
-                new ComparableUser(5,"User5", Role.GUEST),
-                new ComparableUser(3,"User3",Role.GUEST)
+                new ComparableUser(4, "User4", Role.USER),
+                new ComparableUser(1, "User1", Role.ADMIN),
+                new ComparableUser(2, "User2", Role.GUEST),
+                new ComparableUser(5, "User5", Role.GUEST),
+                new ComparableUser(3, "User3", Role.GUEST)
         );
 
         List<User> sorted = new LinkedList<>();
         List<String> names = users.stream()
                 .filter(user -> user.getId() > 3)
-                .sorted((u1,u2) -> u1.getName().compareTo(u2.getName()))
+                .sorted((u1, u2) -> u1.getName().compareTo(u2.getName()))
                 .peek(user -> sorted.add(user))
                 .map(user -> user.getName())
                 .collect(toList());
@@ -333,11 +330,11 @@ public class StreamExample {
     public void forEachTest() {
 
         Collection<User> users = Arrays.asList(
-                new ComparableUser(4,"User4",Role.USER),
-                new ComparableUser(1,"User1",Role.ADMIN),
-                new ComparableUser(2,"User2",Role.GUEST),
-                new ComparableUser(5,"User5", Role.GUEST),
-                new ComparableUser(3,"User3",Role.GUEST)
+                new ComparableUser(4, "User4", Role.USER),
+                new ComparableUser(1, "User1", Role.ADMIN),
+                new ComparableUser(2, "User2", Role.GUEST),
+                new ComparableUser(5, "User5", Role.GUEST),
+                new ComparableUser(3, "User3", Role.GUEST)
         );
 
         List<Role> names = new LinkedList<>();
@@ -346,14 +343,14 @@ public class StreamExample {
                 .map(user -> user.getRole())
                 //.forEach(user -> names.add(user));
                 .forEach(name -> System.out.println(name));
-                //тоже самое через метод
-                //.forEach(this::method);
+        //тоже самое через метод
+        //.forEach(this::method);
 
 
         System.out.println(names);
     }
 
-    public void method(Role role ) {
+    public void method(Role role) {
         System.out.println(role);
     }
 
@@ -361,11 +358,11 @@ public class StreamExample {
     public void mapTest() {
 
         Collection<User> users = Arrays.asList(
-                new ComparableUser(4,"User4",Role.USER),
-                new ComparableUser(1,"User1",Role.ADMIN),
-                new ComparableUser(2,"User2",Role.GUEST),
-                new ComparableUser(5,"User5", Role.GUEST),
-                new ComparableUser(3,"User3",Role.GUEST)
+                new ComparableUser(4, "User4", Role.USER),
+                new ComparableUser(1, "User1", Role.ADMIN),
+                new ComparableUser(2, "User2", Role.GUEST),
+                new ComparableUser(5, "User5", Role.GUEST),
+                new ComparableUser(3, "User3", Role.GUEST)
         );
 
         List<Long> idList;
@@ -387,11 +384,11 @@ public class StreamExample {
     public void testMapToInt_mapToObject() {
 
         List<User> users = Arrays.asList(
-                new ComparableUser(4,"User4",Role.USER),
-                new ComparableUser(1,"User1",Role.ADMIN),
-                new ComparableUser(2,"User2",Role.GUEST),
-                new ComparableUser(5,"User5", Role.GUEST),
-                new ComparableUser(3,"User3",Role.GUEST)
+                new ComparableUser(4, "User4", Role.USER),
+                new ComparableUser(1, "User1", Role.ADMIN),
+                new ComparableUser(2, "User2", Role.GUEST),
+                new ComparableUser(5, "User5", Role.GUEST),
+                new ComparableUser(3, "User3", Role.GUEST)
         );
 
         List<String> lst = new ArrayList<>();
@@ -399,9 +396,9 @@ public class StreamExample {
         List<User> userList = users.stream()
                 .peek(user -> lst.add(user.getName()))
                 //мапим в int
-                .mapToInt(user -> (int ) user.getId())
+                .mapToInt(user -> (int) user.getId())
                 //мапим int в object
-                .mapToObj(id -> new User(id, "User_" + id, users.get(id -1).getRole()))
+                .mapToObj(id -> new User(id, "User_" + id, users.get(id - 1).getRole()))
                 .collect(toList());
 
         System.out.println(userList);
@@ -420,19 +417,19 @@ public class StreamExample {
                 new ComparableUser(3, "User3", Role.GUEST)
         );
 
-        double [] data = users.stream()
-                .sorted( (u1, u2) -> u1.getRole().compareTo(u2.getRole()))
+        double[] data = users.stream()
+                .sorted((u1, u2) -> u1.getRole().compareTo(u2.getRole()))
                 .mapToDouble(user -> {
                     int roleLength = user.getRole().name().length();
-                    return user.getId() + (double)roleLength;
+                    return user.getId() + (double) roleLength;
                 })
                 .toArray();
 
-        for(int i = 0; i < data.length; i++) {
+        for (int i = 0; i < data.length; i++) {
             System.out.println(data[i]);
         }
 
-        for(Double dbl: data) {
+        for (Double dbl : data) {
             System.out.println(dbl);
         }
     }
@@ -450,7 +447,7 @@ public class StreamExample {
 
         List<String> data = users.stream()
                 .sorted(Comparator.comparing(user -> user.getId()))
-                .sorted((u1,u2) -> u1.getName().compareTo(u2.getName()))
+                .sorted((u1, u2) -> u1.getName().compareTo(u2.getName()))
                 .flatMap(user -> Stream.of(
                         "id:" + user.getId(),
                         "role:" + user.getRole(),
@@ -461,6 +458,7 @@ public class StreamExample {
 
 
     }
+
     @Test
     public void testFlatMapToInt() {
         Collection<User> users = Arrays.asList(
@@ -478,14 +476,145 @@ public class StreamExample {
                         user.getName().length(),
                         user.getRole().name().length()))
                 //Нихуяшечки не понятно!
-               .collect( () -> new LinkedList<Integer>(),
+                .collect(() -> new LinkedList<Integer>(),
                         (list, value) -> list.add(value),
-                       (list,list2 ) -> list.addAll(list2));
+                        (list, list2) -> list.addAll(list2));
 
         System.out.println(data);
 
+    }
+    //flatMapToLong
+    //flatMapToDouble
+    //аналогично int
+
+    @Test
+    public void testFlatMapToDouble() {
+        Collection<User> users = Arrays.asList(
+                new User(4, "User44", Role.USER),
+                new User(1, "User1", Role.ADMIN),
+                new User(2, "User2", Role.GUEST),
+                new User(5, "User5", Role.GUEST),
+                new User(3, "User3", Role.GUEST)
+        );
+
+        List<Double> data = users.stream()
+                //.sorted(Comparator.comparing(user -> user.getId()))
+                .flatMapToDouble(user -> DoubleStream.of(
+                        (double) user.getId(),
+                        user.getRole().name().length(),
+                        user.getName().length()))
+                //Нихуяшечки не понятно!
+                .collect(() -> new LinkedList<Double>(),
+                        (list, value) -> list.add(value),
+                        (list, list2) -> list.addAll(list2));
+
+        System.out.println(data);
 
     }
+
+    @Test
+    public void testFlatMapToLong() {
+        Collection<User> users = Arrays.asList(
+                new User(4, "User44", Role.USER),
+                new User(1, "User1", Role.ADMIN),
+                new User(2, "User2", Role.GUEST),
+                new User(5, "User5", Role.GUEST),
+                new User(3, "User3", Role.GUEST)
+        );
+
+        List<Long> data = users.stream()
+                //.sorted(Comparator.comparing(user -> user.getId()))
+                .flatMapToLong(user -> LongStream.of(
+                        user.getId(),
+                        user.getRole().name().length(),
+                        user.getName().length()))
+                //Нихуяшечки не понятно!
+                .collect(() -> new LinkedList<Long>(),
+                        (list, value) -> list.add(value),
+                        (list, list2) -> list.addAll(list2));
+
+        System.out.println(data);
+
+    }
+
+    @Test
+    public void toArrayTest() {
+
+        Collection<User> users = Arrays.asList(
+                new User(4, "User44", Role.USER),
+                new User(1, "User1", Role.ADMIN),
+                new User(2, "User2", Role.GUEST),
+                new User(5, "User5", Role.GUEST),
+                new User(3, "User3", Role.GUEST)
+        );
+
+        Object[] sorted = users.stream()
+                .sorted(Comparator.comparing(user -> user.getName()))
+                .toArray();
+
+        for (Object obj : sorted) {
+            System.out.println(obj);
+        }
+
+    }
+
+    @Test
+    public void testCollect() {
+
+        Collection<User> users = Arrays.asList(
+                new User(4, "User44", Role.USER),
+                new User(1, "User1", Role.ADMIN),
+                new User(2, "User2", Role.GUEST),
+                new User(5, "User5", Role.GUEST),
+                new User(3, "User3", Role.GUEST),
+                new User(3, "User3", Role.GUEST)
+        );
+
+//        List<String> data = users.stream()
+//                .sorted(Comparator.comparing(user -> user.getName()))
+//                .map(user -> user.toString())
+//                .collect(
+//                        //Это Supplier создает контейнер
+//                        () -> new LinkedList<>(),
+//                        //Это biconsumer (Accumulator) добавляет один элемент в контейнер.
+//                        (list, value) -> list.add(value),
+//                        //Это BiConsumer (Combiner) добавляет все элементы в контейнер.
+//                        (list, list2) -> list.addAll(list2));
+
+        //same with method reference
+//        List<String> data = users.stream()
+//                .sorted(Comparator.comparing(User::getName).reversed())
+//                .map(User::toString)
+//                .collect(
+//                        //Это Supplier создает контейнер
+//                        LinkedList<String>::new,
+//                        //Это biconsumer (Accumulator) добавляет один элемент в контейнер.
+//                        List::add,
+//                        //Это BiConsumer (Combiner) добавляет все элементы в контейнер.
+//                        List::addAll
+//        );
+
+        Set<String> data = users.stream()
+                .sorted(Comparator.comparing(User::getName).reversed())
+                .map(User::toString)
+                .collect(
+                        //Это Supplier создает контейнер
+                        () -> new HashSet<String>(),
+                        //Это biconsumer (Accumulator) добавляет один элемент в контейнер.
+                        (list, value) -> list.add(value),
+                        //Это BiConsumer (Combiner) добавляет все элементы в контейнер.
+                        (list, list2) -> list.addAll(list2)
+                );
+
+        System.out.println(data);
+
+        for (String str : data) {
+            System.out.println(str);
+        }
+
+        System.out.println(data.size());
+    }
+
 
 }
 
