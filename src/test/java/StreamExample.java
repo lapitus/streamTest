@@ -8,6 +8,7 @@ import java.util.*;
 import java.util.stream.*;
 
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class StreamExample {
@@ -614,6 +615,525 @@ public class StreamExample {
 
         System.out.println(data.size());
     }
+
+    @Test
+    public void test() {
+        List<User> users = Arrays.asList(
+                new User(1,"Vasya",Role.ADMIN)
+        );
+
+        for (User user: users) {
+            System.out.println(user);
+        }
+
+        String admin = Role.ADMIN.toString();
+        System.out.println(admin);
+    }
+
+    @Test
+    public void testCollectorToList() {
+
+        Collection<User> users = Arrays.asList(
+                new User(4, "User44", Role.USER),
+                new User(1, "User1", Role.ADMIN),
+                new User(2, "User2", Role.GUEST),
+                new User(5, "User5", Role.GUEST),
+                new User(3, "User3", Role.GUEST),
+                new User(3, "User3", Role.GUEST)
+        );
+
+        List<String> userNames = users.stream()
+                //.filter(user -> user.getName().equals("User1"))
+                .sorted(Comparator.comparing(User::getName))
+                .map(user -> user.getName())
+                .collect(toList());
+        System.out.println(userNames);
+    }
+
+    @Test
+    public void testCollectorToSet() {
+
+        Collection<User> users = Arrays.asList(
+                new User(4, "User44", Role.USER),
+                new User(1, "User1", Role.ADMIN),
+                new User(2, "User2", Role.GUEST),
+                new User(5, "User5", Role.GUEST),
+                new User(3, "User3", Role.GUEST),
+                new User(3, "User3", Role.GUEST)
+        );
+
+        Set<String> userNames = users.stream()
+                //.filter(user -> user.getName().equals("User1"))
+                .sorted(Comparator.comparing(User::getId))
+                .map(user -> user.getName())
+                .collect(toSet());
+        System.out.println(userNames);
+
+        for(String user: userNames) {
+            System.out.println(user);
+        }
+    }
+
+    @Test
+    public void testCollectorToMap() {
+
+        Collection<User> users = Arrays.asList(
+                new User(4, "User44", Role.USER),
+                new User(1, "User1", Role.ADMIN),
+                new User(2, "User2", Role.GUEST),
+                new User(5, "User5", Role.GUEST),
+                new User(3, "User3", Role.GUEST)
+        );
+
+        Map<Long, String> userNames = users.stream()
+                //.filter(user -> user.getName().equals("User1"))
+                .sorted(Comparator.comparing(User::getId))
+                .collect(Collectors.toMap(
+                        user -> user.getId(),
+                        user -> user.getName()
+                ));
+
+        System.out.println(userNames);
+
+        userNames.forEach( (k,v) -> System.out.println("Key = " + k + " Value = " + v));
+
+    }
+
+    @Test
+    public void testCollectorColection() {
+
+        Collection<User> users = Arrays.asList(
+                new User(4, "User44", Role.USER),
+                new User(1, "User1", Role.ADMIN),
+                new User(2, "User2", Role.GUEST),
+                new User(5, "User5", Role.GUEST),
+                new User(3, "User3", Role.GUEST)
+        );
+
+        Collection<User> userNames = users.stream()
+                //.filter(user -> user.getName().equals("User1"))
+                .sorted(Comparator.comparing(User::getId))
+        .collect(Collectors.toCollection(HashSet::new
+        //.collect(Collectors.toCollection( () -> new HashSet<User>()
+                ));
+
+        System.out.println(userNames);
+    }
+
+    @Test
+    public void testCollectorJoining() {
+
+        Collection<User> users = Arrays.asList(
+                new User(4, "User44", Role.USER),
+                new User(1, "User1", Role.ADMIN),
+                new User(2, "User2", Role.GUEST),
+                new User(5, "User5", Role.GUEST),
+                new User(3, "User3", Role.GUEST)
+        );
+
+        String userNames = users.stream()
+                //.filter(user -> user.getName().equals("User1"))
+                .sorted(Comparator.comparing(User::getId))
+                .map(user -> user.getName())
+                .collect(Collectors.joining());
+
+        System.out.println(userNames);
+    }
+
+    @Test
+    public void testCollectorCounting() {
+
+        Collection<User> users = Arrays.asList(
+                new User(4, "User44", Role.USER),
+                new User(1, "User1", Role.ADMIN),
+                new User(2, "User2", Role.GUEST),
+                new User(5, "User5", Role.GUEST),
+                new User(3, "User3", Role.GUEST)
+        );
+
+        Long userCnt = users.stream()
+                //.filter(user -> user.getName().equals("User1"))
+                .sorted(Comparator.comparing(User::getId))
+                .map(user -> user.getName())
+                .collect(Collectors.counting());
+
+        System.out.println(userCnt);
+    }
+
+    @Test
+    public void testCollectorMinMax() {
+
+        Collection<User> users = Arrays.asList(
+                new User(4, "User44", Role.USER),
+                new User(1, "User1", Role.ADMIN),
+                new User(2, "User2", Role.GUEST),
+                new User(5, "User5", Role.GUEST),
+                new User(3, "User3", Role.GUEST)
+        );
+
+        Optional userCnt = users.stream()
+                  .map(user-> user.getName())
+                  .collect(Collectors.maxBy(Comparator.naturalOrder()));
+                 //.collect(Collectors.minBy(Comparator.naturalOrder()));
+
+        System.out.println(userCnt.get());
+    }
+
+    @Test
+    public void testCollectorSummingInt() {
+
+        Collection<User> users = Arrays.asList(
+                new User(4, "User44", Role.USER),
+                new User(1, "User1", Role.ADMIN),
+                new User(2, "User2", Role.GUEST),
+                new User(5, "User5", Role.GUEST),
+                new User(3, "User3", Role.GUEST)
+        );
+
+        int sumId = users.stream()
+                .collect(Collectors.summingInt(user -> (int) user.getId()));
+        System.out.println(sumId);
+    }
+
+    @Test
+    public void testCollectorSummingDouble() {
+
+        Collection<User> users = Arrays.asList(
+                new User(4, "User44", Role.USER),
+                new User(1, "User1", Role.ADMIN),
+                new User(2, "User2", Role.GUEST),
+                new User(5, "User5", Role.GUEST),
+                new User(3, "User3", Role.GUEST)
+        );
+
+        double sumId = users.stream()
+                .collect(Collectors.summingDouble(user -> (double) user.getId()));
+        System.out.println(sumId);
+    }
+
+    @Test
+    public void testCollectorSummingLong() {
+
+        Collection<User> users = Arrays.asList(
+                new User(4, "User44", Role.USER),
+                new User(1, "User1", Role.ADMIN),
+                new User(2, "User2", Role.GUEST),
+                new User(5, "User5", Role.GUEST),
+                new User(3, "User3", Role.GUEST)
+        );
+
+        double sumId = users.stream()
+                .collect(Collectors.summarizingLong(User::getId)).getSum();
+        System.out.println(sumId);
+    }
+
+    @Test
+    public void testCollectorAvg() {
+
+        Collection<User> users = Arrays.asList(
+                new User(4, "User44", Role.USER),
+                new User(1, "User1", Role.ADMIN),
+                new User(2, "User2", Role.GUEST),
+                new User(5, "User5", Role.GUEST),
+                new User(3, "User3", Role.GUEST)
+        );
+
+        double avg = users.stream()
+                .collect(Collectors.averagingInt(user -> (int) user.getId()));
+        System.out.println(avg);
+    }
+
+    @Test
+    public void testCollectorAvgLong() {
+
+        Collection<User> users = Arrays.asList(
+                new User(4, "User44", Role.USER),
+                new User(1, "User1", Role.ADMIN),
+                new User(2, "User2", Role.GUEST),
+                new User(5, "User5", Role.GUEST),
+                new User(3, "User3", Role.GUEST)
+        );
+
+        double avg = users.stream()
+                .collect(Collectors.averagingLong(user -> user.getId()));
+        System.out.println(avg);
+    }
+
+    @Test
+    public void testReduce() {
+
+        Collection<User> users = Arrays.asList(
+                new User(4, "User44", Role.USER),
+                new User(1, "User1", Role.ADMIN),
+                new User(2, "User2", Role.GUEST),
+                new User(5, "User5", Role.GUEST),
+                new User(3, "User3", Role.GUEST)
+        );
+
+        double userReduce = users.stream()
+                .map(user -> user.getId())
+                .collect(Collectors.reducing((u1, u2) -> u1 - u2)).orElse(-1L);
+
+        System.out.println(userReduce);
+
+    }
+
+    static String removeDuplicates(String s) {
+        StringBuilder noDupes = new StringBuilder();
+        for (int i = 0; i < s.length(); i++) {
+            String si = s.substring(i, i + 1);
+            if (noDupes.indexOf(si) == -1) {
+                noDupes.append(si);
+            }
+        }
+        return noDupes.toString();
+    }
+
+    @Test
+    public void testReduceWithLogin() {
+
+
+
+        Collection<User> users = Arrays.asList(
+                new User(4, "User44", Role.USER),
+                new User(1, "User1", Role.ADMIN),
+                new User(2, "User2", Role.GUEST),
+                new User(5, "User5", Role.GUEST),
+                new User(3, "User3", Role.GUEST)
+        );
+
+        String userNamesWithoutRepeateSymbol = users.stream()
+                .map(User::getName)
+                .reduce( "", (u1,u2) -> removeDuplicates(u1 + u2));
+
+        System.out.println(userNamesWithoutRepeateSymbol);
+
+    }
+
+    class ClassUserWithCompany extends User {
+
+        private String company;
+
+        public String getCompany() {
+            return company;
+        }
+
+        public ClassUserWithCompany(long id, String name, Role role) {
+            super(id, name, role);
+
+        }
+        public ClassUserWithCompany(long id, String name, Role role, String company) {
+            super(id, name, role);
+            this.company = company;
+        }
+    }
+
+    @Test
+    public void testGroupingBy() {
+
+
+        Collection<ClassUserWithCompany> users = Arrays.asList(
+                new ClassUserWithCompany(4, "User44", Role.USER, "Microsoft"),
+                new ClassUserWithCompany(4, "User44", Role.ADMIN, "Google"),
+                new ClassUserWithCompany(1, "User1", Role.ADMIN, "Google"),
+                new ClassUserWithCompany(2, "User2", Role.GUEST, "123"),
+                new ClassUserWithCompany(5, "User5", Role.GUEST, "Google"),
+                new ClassUserWithCompany(5, "User5", Role.ADMIN, "Microsoft"),
+                new ClassUserWithCompany(3, "User3", Role.GUEST,"123")
+        );
+
+        Map<String, List<ClassUserWithCompany>> userColl = users.stream()
+                .collect(Collectors.groupingBy((u1) -> u1.getCompany())
+                );
+
+        userColl.forEach((k,v ) ->  System.out.println("K = " + k + " V = " + v));
+    }
+
+    @Test
+    public void testReduceWithStartingPoing() {
+
+
+
+        Collection<User> users = Arrays.asList(
+                new User(4, "User44", Role.USER),
+                new User(1, "User1", Role.ADMIN),
+                new User(2, "User2", Role.GUEST),
+                new User(5, "User5", Role.GUEST),
+                new User(3, "User3", Role.GUEST)
+        );
+
+        Long sum = users.stream()
+                .map(User::getId)
+                .reduce( 350L, (u1,u2) -> u1 + u2);
+
+        System.out.println(sum);
+
+    }
+
+    @Test
+    public void testMinMax() {
+
+
+
+        Collection<User> users = Arrays.asList(
+                new User(0, "User44", Role.USER),
+                new User(1, "User1", Role.ADMIN),
+                new User(2, "User2", Role.GUEST),
+                new User(5, "User5", Role.GUEST),
+                new User(3, "User3", Role.GUEST)
+        );
+
+        Optional<User> minUser = users.stream()
+                .max(Comparator.comparing(User::getId)
+                        .thenComparing(user -> user.getName()));
+        System.out.println(minUser.get());
+    }
+
+    @Test
+    public void testMinCount() {
+
+
+
+        Collection<User> users = Arrays.asList(
+                new User(0, "User44", Role.USER),
+                new User(1, "User1", Role.ADMIN),
+                new User(2, "User2", Role.GUEST),
+                new User(5, "User5", Role.GUEST),
+                new User(3, "User3", Role.GUEST)
+        );
+
+        Long result = users.stream()
+                .filter(user -> user.getRole().name().equals("GUEST"))
+                .count();
+
+        System.out.println(result);
+    }
+
+    @Test
+    public void testAnyMatch() {
+
+
+
+        Collection<User> users = Arrays.asList(
+                new User(0, "User44", Role.USER),
+                new User(1, "User1", Role.ADMIN),
+                new User(2, "User2", Role.GUEST),
+                new User(5, "User5", Role.GUEST),
+                new User(3, "User3", Role.GUEST)
+        );
+
+        assertEquals(true,users.stream().anyMatch(user -> user.getRole().equals(Role.ADMIN)));
+
+        assertEquals(true,users.stream().anyMatch(user -> user.getId() == 5));
+    }
+
+    @Test
+    public void testFindFirst() {
+
+
+
+        Collection<User> users = Arrays.asList(
+                new User(0, "User44", Role.USER),
+                new User(1, "User1", Role.ADMIN),
+                new User(2, "User2", Role.GUEST),
+                new User(5, "User5", Role.GUEST),
+                new User(3, "User3", Role.GUEST)
+        );
+
+        Optional<User> findUser = users.stream()
+                .findFirst();
+
+        System.out.println(findUser.orElseGet(() -> new User(1,"aaa",Role.ADMIN)));
+
+    }
+    @Test
+    public void testStreamOF() {
+        Stream<User> stream = Stream.of(
+                new User(0, "User44", Role.USER),
+                new User(1, "User1", Role.ADMIN),
+                new User(2, "User2", Role.GUEST),
+                new User(5, "User5", Role.GUEST),
+                new User(3, "User3", Role.GUEST)
+        );
+
+        Optional<User> user = stream.findAny();
+        System.out.println(user.get().getName());
+    }
+
+    @Test
+    public void testStreamBuilder() {
+        Stream<User> stream = Stream.<User>builder()
+                .add(new User(0, "User44", Role.USER))
+                .add(new User(1, "User1", Role.ADMIN))
+                .add(new User(2, "User2", Role.GUEST))
+                .add(new User(5, "User5", Role.GUEST))
+                .add(new User(3, "User3", Role.GUEST)).build();
+
+        Optional<User> user = stream.findAny();
+        System.out.println(user.get().getName());
+    }
+
+    @Test
+    public void testArrayToStream() {
+        User[] usersArray = {
+                new User(0, "User44", Role.USER),
+                new User(1, "User1", Role.ADMIN),
+                new User(2, "User2", Role.GUEST),
+                new User(5, "User5", Role.GUEST),
+                new User(3, "User3", Role.GUEST)
+        };
+
+        Stream<User> usersStream = Arrays.stream(usersArray);
+    }
+
+    @Test
+    public void testStreamItterate() {
+
+        int start = 0;
+
+
+        List<Integer> result = Stream
+                .iterate(start, n -> n + 1)
+                .limit(50)
+                .collect(toList());
+
+        System.out.println(result);
+    }
+
+    @Test
+    public void testStreamGenerate() {
+
+        Random random = new Random();
+
+        List<User> result = Stream
+                .generate(() -> new User(random.nextInt(99),"vasya_" + random.nextInt(54),Role.values()[random.nextInt(3)]))
+                .limit(50)
+                .collect(toList());
+
+        System.out.println(result);
+    }
+
+    @Test
+    public void testStreamConcat() {
+
+        Stream<Integer> stream1 = Stream
+                .iterate(0, n -> n +1)
+                .limit(25);
+
+        Stream<Integer> stream2 = Stream
+                .iterate(100, n -> n +1)
+                .limit(25);
+
+//        Stream<Integer> stream3 = Stream.concat(stream1,stream2);
+//
+//        for (Integer integer: stream3.collect(toList())){
+//            System.out.print(integer + " ");
+//        }
+
+        List<Integer> list = Stream.concat(stream1,stream2).collect(toList());
+        System.out.println(list);
+    }
+
 
 
 }
