@@ -4,8 +4,14 @@ import org.junit.jupiter.api.Test;
 import org.w3c.dom.ls.LSOutput;
 
 import javax.jws.soap.SOAPBinding;
+import java.io.CharArrayReader;
+import java.io.IOException;
+import java.lang.reflect.Array;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.*;
+
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
@@ -1132,9 +1138,276 @@ public class StreamExample {
 
         List<Integer> list = Stream.concat(stream1,stream2).collect(toList());
         System.out.println(list);
+
     }
 
 
+    @Test
+    public String testVovel(String str) {
+
+//        String resultStr = "";
+//        List<String> vovelsList = Arrays.asList("A","E","U","U","I","O");
+//
+//        for (Character vovel: str.toCharArray()) {
+//            if (!vovelsList.contains(vovel.toString().toUpperCase())) {
+//                resultStr += vovel;
+//            }
+//        }
+//        return resultStr;
+        //
+        return str.replaceAll("(?i)[aeiou]" , "");
+        //same
+        //return str.replaceAll("[aeiouAEIOU]" , "");
+
+    }
+
+    @Test
+    public void ttt() {
+        assertEquals("Ths wbst s fr lsrs LL!", testVovel("This website is for losers LOL!"));
+        assertEquals("N ffns bt,\nYr wrtng s mng th wrst 'v vr rd", testVovel(
+                "No offense but,\nYour writing is among the worst I've ever read"));
+
+        //System.out.println(testVovel("No offense but,\\nYour writing is among the worst I've ever read\""));
+    }
+
+    public int countChar(String str, char ch) {
+        int cnt = 0;
+
+        for (int i = 0; i <= str.length() - 1; i++) {
+            if (Character.toLowerCase(str.charAt(i)) == Character.toLowerCase(ch)) {
+                System.out.println("yy: " + ch);
+                cnt++;
+            }
+        }
+
+
+        return cnt;
+    }
+
+    @Test
+    public void asd() {
+        String str = "abceE".toLowerCase();
+        String resStr = "";
+//1
+//        for (Character ch: str.toCharArray()) {
+//
+//            if (str.toLowerCase().chars().filter(a -> a == Character.toLowerCase(ch)).count() == 1) {
+//                resStr += "(";
+//            } else {
+//                resStr += ")";
+//            }
+//        }
+//        System.out.println(resStr);
+//2
+        //long count = String.chars().filter(ch -> ch == 'e').count();
+//        for (char cc: str.toLowerCase().toCharArray()) {
+//            System.out.println(countChar(str,Character.toLowerCase(cc)));
+//        }
+//3
+        for (int i = 0; i < str.length(); i++) {
+            char c = str.charAt(i);
+            resStr += str.indexOf(c) == str.lastIndexOf(c) ? "(" : ")";
+        }
+        System.out.println(resStr);
+    }
+
+    @Test
+    public void countXO() {
+        char x = "x".charAt(0);
+        char o = "o".charAt(0);
+
+        String str = "xxxooo";
+
+        Long xCount = str.toLowerCase().chars().filter(a -> a == x).count();
+        Long oCount = str.toLowerCase().chars().filter(a -> a == o).count();
+
+        System.out.println(str.replace("x","").length());
+        System.out.println(str.replace("o","").length());
+
+        System.out.println(str.replace("x","").length() == str.replace("o","").length());
+
+        System.out.println(1%2);
+
+
+    }
+
+    @Test
+    public void sortArray() {
+
+        int [] arr = {0,1,2,3,4,9,8,7,6,5};
+        List<Integer> oddArr = new ArrayList<>();
+
+//my
+//        for (int i = 0; i < arr.length; i++) {
+//            if(arr[i]%2 != 0) {
+//                oddArr.add(arr[i]);
+//
+//            }
+//        }
+//
+//        Collections.sort(oddArr);
+//
+//        System.out.println(oddArr);
+//
+//        int innerCnt = 0;
+//
+//        for (int i = 0; i < arr.length; i++) {
+//            if(arr[i]%2 != 0) {
+//               arr[i] = oddArr.get(innerCnt);
+//               innerCnt++;
+//            }
+//        }
+//
+//        for (int i = 0; i < arr.length; i++) {
+//
+//            System.out.println(arr[i]);
+//
+//        }
+
+        // Sort the odd numbers only
+        int[] sortedOdd = Arrays.stream(arr).filter(e -> e % 2 == 1).sorted().toArray();
+
+        for (int i=0, j=0; i < arr.length; i++) {
+            if(arr[i] % 2 != 0) {
+                arr[i] = sortedOdd[j++];
+            }
+        }
+
+        for (int i = 0; i < arr.length; i++) {
+
+            System.out.println(arr[i]);
+        }
+
+    }
+    @Test
+    public void binaryTest() {
+        int a = 7;
+        char one = "1".charAt(0);
+        String bin = "";
+
+
+        System.out.println(Integer.toBinaryString(a));
+
+
+        Long cnt = Integer.toBinaryString(a).chars().filter(n -> n == "1".charAt(0)).count();
+        System.out.println(bin);
+        System.out.println(cnt);
+
+    }
+
+    @Test
+    public void testStreamParralel() {
+
+        Collection<User> users = Arrays.asList(
+                new User(0, "User44", Role.USER),
+                new User(1, "User1", Role.ADMIN),
+                new User(2, "User2", Role.GUEST),
+                new User(5, "User5", Role.GUEST),
+                new User(3, "User3", Role.GUEST)
+        );
+
+        List<String> names = new LinkedList<>();
+
+        StringBuilder result = users.stream()
+        .peek(user -> {
+            names.add(user.getName());
+            System.out.println(user.getName());
+        })
+        .parallel()
+        .map(user -> user.getName())
+                .sequential()
+        .reduce(new StringBuilder(),
+        (builder, name) -> builder.append(name),
+        (builder, anotherBuilder) -> builder.append(anotherBuilder));
+
+        System.out.println(names);
+        System.out.println(result);
+    }
+
+    @Test
+    public void testStreamAverage () {
+
+        Stream<Integer> stream = Stream.of(1,2,3,4,5);
+
+        double avg = stream.
+                mapToDouble(n -> n)
+                .average()
+                .getAsDouble();
+
+
+        System.out.println(avg);
+
+    }
+
+    private String memory;
+    @Test
+    public void testStreamOptional () {
+
+
+
+        Stream<Integer> stream = Stream.of(4,2,3,4,5);
+
+        Optional<Integer> opt = stream
+                .findFirst();
+
+        System.out.println(opt.orElse(1));
+
+        this.memory = null;
+        opt.ifPresent(n -> memory = n.toString());
+        System.out.println(memory);
+
+    }
+
+    @Test
+    public void testStreamEmptyOptional () {
+
+
+
+        Stream<String> stream = Stream.of("4","2","3","4","5");
+
+        Optional<String> opt = stream
+                .filter(n -> n.equals("9"))
+                .findAny();
+
+        //System.out.println(opt.get());
+        //System.out.println(opt.orElseThrow(() -> new RuntimeException("This is error")));
+        this.memory = null;
+        opt.ifPresent(n -> memory = n);
+        System.out.println(memory);
+
+    }
+
+    @Test
+    public void testStreamFiles () throws IOException {
+        Stream<String> stream = Files.lines(Paths.get("D:\\sber_java\\Decorators\\Decorators.iml"));
+        String fileStr = stream.collect(toList()).toString();
+        System.out.println(fileStr);
+    }
+
+    @Test
+    public void testStreamWithString () {
+        IntStream stream = "aaaaasd123".chars();
+        IntStream stream2 = "asd123".chars();
+        IntStream stream3 = "aaaasd123".chars();
+
+        Long cnt = stream3.filter(n-> n == "a".charAt(0)).count();
+        System.out.println(cnt);
+
+//        String  lst = Arrays.toString(stream.toArray());
+        int[] lst = stream
+                .toArray();
+
+        List<Integer> intList = new ArrayList<>();
+
+        for(int i: lst) {
+            intList.add(i);
+        }
+        System.out.println(intList.toString());
+
+        List<Integer> streamList =  stream2.boxed().collect(toList());
+
+        System.out.println(streamList.toString());
+    }
 
 }
 
